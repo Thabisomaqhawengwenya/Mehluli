@@ -198,6 +198,37 @@ const PortraitImage = styled.img`
   object-fit: cover;
 `;
 
+const AboutScrollContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 300vh;
+  scroll-snap-align: start;
+
+  @media (max-width: 768px) {
+    height: auto;
+    scroll-snap-align: none;
+  }
+`;
+
+const AboutStickyWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: visible;
+  padding: 100px 60px 80px;
+
+  @media (max-width: 768px) {
+    position: relative;
+    height: auto;
+    padding: 120px 20px 80px;
+  }
+`;
+
 // Slide 2: About Me Elements
 const AboutGrid = styled.div`
   display: grid;
@@ -244,7 +275,7 @@ const AboutTextContainer = styled.div`
   align-items: flex-start;
 `;
 
-const AboutParagraph = styled(AnimatedParagraph)`
+const AboutParagraph = styled.p`
   font-family: 'Montserrat', sans-serif;
   font-size: 0.95rem;
   line-height: 1.6;
@@ -607,10 +638,9 @@ const DetailParagraph = styled(AnimatedParagraph)`
 
 interface FadeInParagraphProps {
   children: React.ReactNode;
-  isAbout?: boolean;
 }
 
-const FadeInParagraph: React.FC<FadeInParagraphProps> = ({ children, isAbout = false }) => {
+const FadeInParagraph: React.FC<FadeInParagraphProps> = ({ children }) => {
   const [visible, setVisible] = useState(false);
   const ref = useRef<HTMLParagraphElement>(null);
 
@@ -631,13 +661,6 @@ const FadeInParagraph: React.FC<FadeInParagraphProps> = ({ children, isAbout = f
     return () => observer.disconnect();
   }, []);
 
-  if (isAbout) {
-    return (
-      <AboutParagraph ref={ref} $visible={visible}>
-        {children}
-      </AboutParagraph>
-    );
-  }
   return (
     <DetailParagraph ref={ref} $visible={visible}>
       {children}
@@ -685,6 +708,82 @@ const FullMockupImg = styled.img`
 export default function App() {
   const [activeSection, setActiveSection] = useState('cover');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const aboutOuterRef = useRef<HTMLDivElement>(null);
+
+  // Setup scroll progress listener for scrollytelling
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (!aboutOuterRef.current) {
+            ticking = false;
+            return;
+          }
+          const rect = aboutOuterRef.current.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+          const isMobile = window.innerWidth <= 768;
+
+          if (!isMobile) {
+            const totalScrollableHeight = rect.height - viewportHeight;
+            if (totalScrollableHeight > 0) {
+              const scrollTop = -rect.top;
+              let progress = scrollTop / totalScrollableHeight;
+              progress = Math.max(0, Math.min(1, progress));
+              setScrollProgress(progress);
+            }
+          } else {
+            const startY = viewportHeight;
+            const endY = 100;
+            const currentY = rect.top;
+            let progress = (startY - currentY) / (startY - endY);
+            progress = Math.max(0, Math.min(1, progress));
+            setScrollProgress(progress);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll);
+    
+    // Initial check
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, []);
+
+  const getParagraphProgressStyle = (index: number) => {
+    // Reveal paragraphs sequentially from progress 0.1 to 0.85
+    const start = 0.1 + index * 0.15;
+    const end = start + 0.15;
+
+    let opacity = 0;
+    let translateY = 20;
+
+    if (scrollProgress >= start) {
+      if (scrollProgress >= end) {
+        opacity = 1;
+        translateY = 0;
+      } else {
+        const t = (scrollProgress - start) / (end - start);
+        opacity = t;
+        translateY = 20 - t * 20;
+      }
+    }
+
+    return {
+      opacity,
+      transform: `translateY(${translateY}px)`,
+      transition: 'opacity 0.2s ease-out, transform 0.2s ease-out',
+    };
+  };
 
   // Setup scroll listener / IntersectionObserver to detect active slide
   useEffect(() => {
@@ -745,34 +844,37 @@ export default function App() {
         </Section>
 
         {/* Slide 2: About Me */}
-        <Section id="about" className="portfolio-section">
-          <TopoBackground />
-          <AboutGrid>
-            <AboutImageWrapper>
-              <AboutPortrait src={page_2_img_1} alt="Mehluli Polaroid Suspender Portrait" />
-            </AboutImageWrapper>
-            <AboutTextContainer>
-              <TiltedTitleContainer style={{ alignSelf: 'flex-start', marginBottom: '20px' }}>
-                <TiltedHeading $size="4.5rem">ABOUT ME</TiltedHeading>
-              </TiltedTitleContainer>
-              <FadeInParagraph isAbout>
-                I’m Mehluli Ncube, a Product Designer specializing in UI/UX Design, Graphic Design, and Branding at Uncommon.org. I help businesses transform ideas into user-focused digital experiences and compelling brand identities that build trust, attract customers, and drive growth.
-              </FadeInParagraph>
-              <FadeInParagraph isAbout>
-                I believe great design is more than aesthetics it solves problems, improves customer experiences, and creates meaningful connections between brands and people. Whether it's designing intuitive mobile and web interfaces, developing memorable brand identities, or creating impactful marketing materials, my goal is to deliver solutions that help businesses stand out in competitive markets.
-              </FadeInParagraph>
-              <FadeInParagraph isAbout>
-                My approach combines strategic thinking, creativity, and attention to detail. Every project begins with understanding your business goals, your audience, and the challenges you want to solve. From there, I create designs that are modern, functional, and focused on delivering measurable results.
-              </FadeInParagraph>
-              <FadeInParagraph isAbout>
-                If you're a startup looking to build a strong brand, a growing business wanting a better digital experience, or an established company seeking fresh creative direction, I'm ready to help turn your vision into reality.
-              </FadeInParagraph>
-              <FadeInParagraph isAbout>
-                Let's build experiences your customers will remember and a brand they'll trust.
-              </FadeInParagraph>
-            </AboutTextContainer>
-          </AboutGrid>
-        </Section>
+        <AboutScrollContainer id="about" ref={aboutOuterRef} className="portfolio-section">
+          <AboutStickyWrapper>
+            <TopoBackground />
+            <AboutGrid>
+              <AboutImageWrapper>
+                <AboutPortrait src={page_2_img_1} alt="Mehluli Polaroid Suspender Portrait" />
+              </AboutImageWrapper>
+              <AboutTextContainer>
+                <TiltedTitleContainer style={{ alignSelf: 'flex-start', marginBottom: '20px' }}>
+                  <TiltedHeading $size="4.5rem">ABOUT ME</TiltedHeading>
+                </TiltedTitleContainer>
+                
+                <AboutParagraph style={getParagraphProgressStyle(0)}>
+                  I’m Mehluli Ncube, a Product Designer specializing in UI/UX Design, Graphic Design, and Branding at Uncommon.org. I help businesses transform ideas into user-focused digital experiences and compelling brand identities that build trust, attract customers, and drive growth.
+                </AboutParagraph>
+                <AboutParagraph style={getParagraphProgressStyle(1)}>
+                  I believe great design is more than aesthetics it solves problems, improves customer experiences, and creates meaningful connections between brands and people. Whether it's designing intuitive mobile and web interfaces, developing memorable brand identities, or creating impactful marketing materials, my goal is to deliver solutions that help businesses stand out in competitive markets.
+                </AboutParagraph>
+                <AboutParagraph style={getParagraphProgressStyle(2)}>
+                  My approach combines strategic thinking, creativity, and attention to detail. Every project begins with understanding your business goals, your audience, and the challenges you want to solve. From there, I create designs that are modern, functional, and focused on delivering measurable results.
+                </AboutParagraph>
+                <AboutParagraph style={getParagraphProgressStyle(3)}>
+                  If you're a startup looking to build a strong brand, a growing business wanting a better digital experience, or an established company seeking fresh creative direction, I'm ready to help turn your vision into reality.
+                </AboutParagraph>
+                <AboutParagraph style={getParagraphProgressStyle(4)}>
+                  Let's build experiences your customers will remember and a brand they'll trust.
+                </AboutParagraph>
+              </AboutTextContainer>
+            </AboutGrid>
+          </AboutStickyWrapper>
+        </AboutScrollContainer>
 
         {/* Slide 3: Table of Contents */}
         <Section id="toc" $bg="#0a090b" className="portfolio-section">
