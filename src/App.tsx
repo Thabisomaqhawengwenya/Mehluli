@@ -747,6 +747,10 @@ export default function App() {
       }
     };
 
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+    }
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', handleScroll);
     
@@ -754,6 +758,9 @@ export default function App() {
     handleScroll();
 
     return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleScroll);
+      }
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
     };
