@@ -735,7 +735,7 @@ export default function App() {
             }
           } else {
             const startY = viewportHeight;
-            const endY = 100;
+            const endY = 300;
             const currentY = rect.top;
             let progress = (startY - currentY) / (startY - endY);
             progress = Math.max(0, Math.min(1, progress));
