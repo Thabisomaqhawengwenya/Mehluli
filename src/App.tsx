@@ -225,7 +225,7 @@ const AboutStickyWrapper = styled.div`
   @media (max-width: 768px) {
     position: relative;
     height: auto;
-    padding: 120px 20px 80px;
+    padding: 120px 20px 300px;
   }
 `;
 
