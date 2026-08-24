@@ -69,6 +69,13 @@ const ContentWrapper = styled.div`
   }
 `;
 
+const AnimatedParagraph = styled.p<{ $visible: boolean }>`
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  transform: translateY(${({ $visible }) => ($visible ? '0' : '20px')});
+  transition: opacity 0.8s cubic-bezier(0.215, 0.61, 0.355, 1),
+              transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
+`;
+
 // Helper component for tilted titles
 const TiltedTitleContainer = styled.div`
   transform: rotate(-3.5deg);
@@ -237,7 +244,7 @@ const AboutTextContainer = styled.div`
   align-items: flex-start;
 `;
 
-const AboutParagraph = styled.p`
+const AboutParagraph = styled(AnimatedParagraph)`
   font-family: 'Montserrat', sans-serif;
   font-size: 0.95rem;
   line-height: 1.6;
@@ -585,7 +592,7 @@ const DetailTitle = styled.h2`
   }
 `;
 
-const DetailParagraph = styled.p`
+const DetailParagraph = styled(AnimatedParagraph)`
   font-family: 'Montserrat', sans-serif;
   font-size: 0.95rem;
   line-height: 1.65;
@@ -597,6 +604,46 @@ const DetailParagraph = styled.p`
     font-size: 0.88rem;
   }
 `;
+
+interface FadeInParagraphProps {
+  children: React.ReactNode;
+  isAbout?: boolean;
+}
+
+const FadeInParagraph: React.FC<FadeInParagraphProps> = ({ children, isAbout = false }) => {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.05, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
+  if (isAbout) {
+    return (
+      <AboutParagraph ref={ref} $visible={visible}>
+        {children}
+      </AboutParagraph>
+    );
+  }
+  return (
+    <DetailParagraph ref={ref} $visible={visible}>
+      {children}
+    </DetailParagraph>
+  );
+};
 
 const DetailFooter = styled.span`
   font-family: 'Bebas Neue', sans-serif;
@@ -708,21 +755,21 @@ export default function App() {
               <TiltedTitleContainer style={{ alignSelf: 'flex-start', marginBottom: '20px' }}>
                 <TiltedHeading $size="4.5rem">ABOUT ME</TiltedHeading>
               </TiltedTitleContainer>
-              <AboutParagraph>
+              <FadeInParagraph isAbout>
                 I’m Mehluli Ncube, a Product Designer specializing in UI/UX Design, Graphic Design, and Branding at Uncommon.org. I help businesses transform ideas into user-focused digital experiences and compelling brand identities that build trust, attract customers, and drive growth.
-              </AboutParagraph>
-              <AboutParagraph>
+              </FadeInParagraph>
+              <FadeInParagraph isAbout>
                 I believe great design is more than aesthetics it solves problems, improves customer experiences, and creates meaningful connections between brands and people. Whether it's designing intuitive mobile and web interfaces, developing memorable brand identities, or creating impactful marketing materials, my goal is to deliver solutions that help businesses stand out in competitive markets.
-              </AboutParagraph>
-              <AboutParagraph>
+              </FadeInParagraph>
+              <FadeInParagraph isAbout>
                 My approach combines strategic thinking, creativity, and attention to detail. Every project begins with understanding your business goals, your audience, and the challenges you want to solve. From there, I create designs that are modern, functional, and focused on delivering measurable results.
-              </AboutParagraph>
-              <AboutParagraph>
+              </FadeInParagraph>
+              <FadeInParagraph isAbout>
                 If you're a startup looking to build a strong brand, a growing business wanting a better digital experience, or an established company seeking fresh creative direction, I'm ready to help turn your vision into reality.
-              </AboutParagraph>
-              <AboutParagraph>
+              </FadeInParagraph>
+              <FadeInParagraph isAbout>
                 Let's build experiences your customers will remember and a brand they'll trust.
-              </AboutParagraph>
+              </FadeInParagraph>
             </AboutTextContainer>
           </AboutGrid>
         </Section>
@@ -930,18 +977,18 @@ export default function App() {
           <TopoBackground />
           <DetailTextWrapper>
             <DetailTitle>BATSI FIX</DetailTitle>
-            <DetailParagraph>
+            <FadeInParagraph>
               Batsi Fix is a modern home services platform created to connect homeowners and businesses with trusted, skilled professionals. The brand provides convenient access to reliable services including plumbing, electrical work, carpentry, welding, cleaning, painting, and general maintenance. The goal was to develop a visual identity that communicates trust, reliability, convenience, and professionalism while remaining approachable and easy to recognize across both print and digital platforms.
-            </DetailParagraph>
-            <DetailParagraph>
+            </FadeInParagraph>
+            <FadeInParagraph>
               The project began with research and moodboarding to establish Batsi Fix's personality, visual direction, and target audience. From there, I developed a distinctive visual identity that reflects the brand's commitment to making home services easier and more accessible. The design focuses on a clean, modern, and user-friendly aesthetic that builds confidence between customers and service professionals.
-            </DetailParagraph>
-            <DetailParagraph>
+            </FadeInParagraph>
+            <FadeInParagraph>
               To create a consistent identity, I extended the brand across a range of touchpoints, including business cards, promotional materials, branded workwear, service-related graphics, and digital applications. Each element was designed to work together as a cohesive system, ensuring that Batsi Fix remains consistent, professional, and memorable at every customer interaction.
-            </DetailParagraph>
-            <DetailParagraph>
+            </FadeInParagraph>
+            <FadeInParagraph>
               This project strengthened my understanding of logo design, brand systems, visual consistency, colour strategy, typography, and brand communication. It also helped me explore how a strong visual identity can communicate trust and make a service-based business feel more professional and accessible.
-            </DetailParagraph>
+            </FadeInParagraph>
             <DetailFooter>#FIXINGHOMES, BUILDING TRUST</DetailFooter>
           </DetailTextWrapper>
         </Section>
@@ -966,18 +1013,18 @@ export default function App() {
           <TopoBackground />
           <DetailTextWrapper>
             <DetailTitle>BMW M30 MAGAZINE</DetailTitle>
-            <DetailParagraph>
+            <FadeInParagraph>
               The BMW M30 editorial magazine was designed to celebrate the legacy, performance, and timeless design of the BMW M30 through a premium automotive editorial experience. The objective was to create a sophisticated publication that combines powerful imagery, strong typography, and engaging storytelling to communicate the character and heritage of the iconic vehicle.
-            </DetailParagraph>
-            <DetailParagraph>
+            </FadeInParagraph>
+            <FadeInParagraph>
               The layouts were developed using a clean editorial grid, creating a balanced interplay among photography, typography, and negative space. High-quality automotive imagery served as the primary visual element, while bold headlines and contrasting typography were used to create a strong visual hierarchy and guide the reader through each story.
-            </DetailParagraph>
-            <DetailParagraph>
+            </FadeInParagraph>
+            <FadeInParagraph>
               The magazine uses a minimal and modern colour approach, with neutral tones complemented by yellow accents to create emphasis and reinforce the performance-driven character of the BMW M30. Each spread was designed to maintain consistency while allowing the photography and editorial content to create visual impact.
-            </DetailParagraph>
-            <DetailParagraph>
+            </FadeInParagraph>
+            <FadeInParagraph>
               This project strengthened my understanding of editorial hierarchy, grid systems, typography, image composition, layout design, and visual storytelling. It also allowed me to explore how editorial design can communicate the history, engineering, performance, and personality of an automotive brand through a cohesive print experience.
-            </DetailParagraph>
+            </FadeInParagraph>
           </DetailTextWrapper>
         </Section>
 
