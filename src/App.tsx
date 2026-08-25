@@ -69,12 +69,6 @@ const ContentWrapper = styled.div`
   }
 `;
 
-const AnimatedParagraph = styled.p<{ $visible: boolean }>`
-  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
-  transform: translateY(${({ $visible }) => ($visible ? '0' : '20px')});
-  transition: opacity 0.8s cubic-bezier(0.215, 0.61, 0.355, 1),
-              transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
-`;
 
 // Helper component for tilted titles
 const TiltedTitleContainer = styled.div`
@@ -623,7 +617,38 @@ const DetailTitle = styled.h2`
   }
 `;
 
-const DetailParagraph = styled(AnimatedParagraph)`
+const DetailScrollContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 300vh;
+  scroll-snap-align: start;
+
+  @media (max-width: 768px) {
+    height: auto;
+    scroll-snap-align: none;
+  }
+`;
+
+const DetailStickyWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: visible;
+  padding: 100px 60px 140px;
+
+  @media (max-width: 768px) {
+    position: relative;
+    height: auto;
+    padding: 120px 20px 300px;
+  }
+`;
+
+const DetailParagraph = styled.p`
   font-family: 'Montserrat', sans-serif;
   font-size: 0.95rem;
   line-height: 1.65;
@@ -636,44 +661,14 @@ const DetailParagraph = styled(AnimatedParagraph)`
   }
 `;
 
-interface FadeInParagraphProps {
-  children: React.ReactNode;
-}
-
-const FadeInParagraph: React.FC<FadeInParagraphProps> = ({ children }) => {
-  const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLParagraphElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.05, rootMargin: '0px 0px -40px 0px' }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <DetailParagraph ref={ref} $visible={visible}>
-      {children}
-    </DetailParagraph>
-  );
-};
-
 const DetailFooter = styled.span`
   font-family: 'Bebas Neue', sans-serif;
   font-size: 1.8rem;
   letter-spacing: 1px;
   color: #000000;
   margin-top: 20px;
+  display: inline-block;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
 
   @media (max-width: 768px) {
     font-size: 1.4rem;
@@ -709,7 +704,12 @@ export default function App() {
   const [activeSection, setActiveSection] = useState('cover');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [brandScrollProgress, setBrandScrollProgress] = useState(0);
+  const [editorialScrollProgress, setEditorialScrollProgress] = useState(0);
+
   const aboutOuterRef = useRef<HTMLDivElement>(null);
+  const brandOuterRef = useRef<HTMLDivElement>(null);
+  const editorialOuterRef = useRef<HTMLDivElement>(null);
 
   // Setup scroll progress listener for scrollytelling
   useEffect(() => {
@@ -717,30 +717,72 @@ export default function App() {
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          if (!aboutOuterRef.current) {
-            ticking = false;
-            return;
-          }
-          const rect = aboutOuterRef.current.getBoundingClientRect();
           const viewportHeight = window.innerHeight;
           const isMobile = window.innerWidth <= 768;
 
-          if (!isMobile) {
-            const totalScrollableHeight = rect.height - viewportHeight;
-            if (totalScrollableHeight > 0) {
-              const scrollTop = -rect.top;
-              let progress = scrollTop / totalScrollableHeight;
+          // 1. About Me progress
+          if (aboutOuterRef.current) {
+            const rect = aboutOuterRef.current.getBoundingClientRect();
+            if (!isMobile) {
+              const totalScrollableHeight = rect.height - viewportHeight;
+              if (totalScrollableHeight > 0) {
+                const scrollTop = -rect.top;
+                let progress = scrollTop / totalScrollableHeight;
+                progress = Math.max(0, Math.min(1, progress));
+                setScrollProgress(progress);
+              }
+            } else {
+              const startY = viewportHeight;
+              const endY = 300;
+              const currentY = rect.top;
+              let progress = (startY - currentY) / (startY - endY);
               progress = Math.max(0, Math.min(1, progress));
               setScrollProgress(progress);
             }
-          } else {
-            const startY = viewportHeight;
-            const endY = 300;
-            const currentY = rect.top;
-            let progress = (startY - currentY) / (startY - endY);
-            progress = Math.max(0, Math.min(1, progress));
-            setScrollProgress(progress);
           }
+
+          // 2. Batsi Fix progress
+          if (brandOuterRef.current) {
+            const rect = brandOuterRef.current.getBoundingClientRect();
+            if (!isMobile) {
+              const totalScrollableHeight = rect.height - viewportHeight;
+              if (totalScrollableHeight > 0) {
+                const scrollTop = -rect.top;
+                let progress = scrollTop / totalScrollableHeight;
+                progress = Math.max(0, Math.min(1, progress));
+                setBrandScrollProgress(progress);
+              }
+            } else {
+              const startY = viewportHeight;
+              const endY = 300;
+              const currentY = rect.top;
+              let progress = (startY - currentY) / (startY - endY);
+              progress = Math.max(0, Math.min(1, progress));
+              setBrandScrollProgress(progress);
+            }
+          }
+
+          // 3. BMW Magazine progress
+          if (editorialOuterRef.current) {
+            const rect = editorialOuterRef.current.getBoundingClientRect();
+            if (!isMobile) {
+              const totalScrollableHeight = rect.height - viewportHeight;
+              if (totalScrollableHeight > 0) {
+                const scrollTop = -rect.top;
+                let progress = scrollTop / totalScrollableHeight;
+                progress = Math.max(0, Math.min(1, progress));
+                setEditorialScrollProgress(progress);
+              }
+            } else {
+              const startY = viewportHeight;
+              const endY = 300;
+              const currentY = rect.top;
+              let progress = (startY - currentY) / (startY - endY);
+              progress = Math.max(0, Math.min(1, progress));
+              setEditorialScrollProgress(progress);
+            }
+          }
+
           ticking = false;
         });
         ticking = true;
@@ -780,6 +822,58 @@ export default function App() {
         translateY = 0;
       } else {
         const t = (scrollProgress - start) / (end - start);
+        opacity = t;
+        translateY = 20 - t * 20;
+      }
+    }
+
+    return {
+      opacity,
+      transform: `translateY(${translateY}px)`,
+      transition: 'opacity 0.2s ease-out, transform 0.2s ease-out',
+    };
+  };
+
+  const getBrandParagraphStyle = (index: number) => {
+    // Reveal paragraphs sequentially from progress 0.1 to 0.85
+    const start = 0.1 + index * 0.15;
+    const end = start + 0.15;
+
+    let opacity = 0;
+    let translateY = 20;
+
+    if (brandScrollProgress >= start) {
+      if (brandScrollProgress >= end) {
+        opacity = 1;
+        translateY = 0;
+      } else {
+        const t = (brandScrollProgress - start) / (end - start);
+        opacity = t;
+        translateY = 20 - t * 20;
+      }
+    }
+
+    return {
+      opacity,
+      transform: `translateY(${translateY}px)`,
+      transition: 'opacity 0.2s ease-out, transform 0.2s ease-out',
+    };
+  };
+
+  const getEditorialParagraphStyle = (index: number) => {
+    // Reveal paragraphs sequentially from progress 0.1 to 0.82
+    const start = 0.1 + index * 0.18;
+    const end = start + 0.18;
+
+    let opacity = 0;
+    let translateY = 20;
+
+    if (editorialScrollProgress >= start) {
+      if (editorialScrollProgress >= end) {
+        opacity = 1;
+        translateY = 0;
+      } else {
+        const t = (editorialScrollProgress - start) / (end - start);
         opacity = t;
         translateY = 20 - t * 20;
       }
@@ -1082,25 +1176,27 @@ export default function App() {
         </Section>
 
         {/* Slide 10: Brand Identity Detail */}
-        <Section id="brand-detail" className="portfolio-section">
-          <TopoBackground />
-          <DetailTextWrapper>
-            <DetailTitle>BATSI FIX</DetailTitle>
-            <FadeInParagraph>
-              Batsi Fix is a modern home services platform created to connect homeowners and businesses with trusted, skilled professionals. The brand provides convenient access to reliable services including plumbing, electrical work, carpentry, welding, cleaning, painting, and general maintenance. The goal was to develop a visual identity that communicates trust, reliability, convenience, and professionalism while remaining approachable and easy to recognize across both print and digital platforms.
-            </FadeInParagraph>
-            <FadeInParagraph>
-              The project began with research and moodboarding to establish Batsi Fix's personality, visual direction, and target audience. From there, I developed a distinctive visual identity that reflects the brand's commitment to making home services easier and more accessible. The design focuses on a clean, modern, and user-friendly aesthetic that builds confidence between customers and service professionals.
-            </FadeInParagraph>
-            <FadeInParagraph>
-              To create a consistent identity, I extended the brand across a range of touchpoints, including business cards, promotional materials, branded workwear, service-related graphics, and digital applications. Each element was designed to work together as a cohesive system, ensuring that Batsi Fix remains consistent, professional, and memorable at every customer interaction.
-            </FadeInParagraph>
-            <FadeInParagraph>
-              This project strengthened my understanding of logo design, brand systems, visual consistency, colour strategy, typography, and brand communication. It also helped me explore how a strong visual identity can communicate trust and make a service-based business feel more professional and accessible.
-            </FadeInParagraph>
-            <DetailFooter>#FIXINGHOMES, BUILDING TRUST</DetailFooter>
-          </DetailTextWrapper>
-        </Section>
+        <DetailScrollContainer id="brand-detail" ref={brandOuterRef} className="portfolio-section">
+          <DetailStickyWrapper>
+            <TopoBackground />
+            <DetailTextWrapper>
+              <DetailTitle>BATSI FIX</DetailTitle>
+              <DetailParagraph style={getBrandParagraphStyle(0)}>
+                Batsi Fix is a modern home services platform created to connect homeowners and businesses with trusted, skilled professionals. The brand provides convenient access to reliable services including plumbing, electrical work, carpentry, welding, cleaning, painting, and general maintenance. The goal was to develop a visual identity that communicates trust, reliability, convenience, and professionalism while remaining approachable and easy to recognize across both print and digital platforms.
+              </DetailParagraph>
+              <DetailParagraph style={getBrandParagraphStyle(1)}>
+                The project began with research and moodboarding to establish Batsi Fix's personality, visual direction, and target audience. From there, I developed a distinctive visual identity that reflects the brand's commitment to making home services easier and more accessible. The design focuses on a clean, modern, and user-friendly aesthetic that builds confidence between customers and service professionals.
+              </DetailParagraph>
+              <DetailParagraph style={getBrandParagraphStyle(2)}>
+                To create a consistent identity, I extended the brand across a range of touchpoints, including business cards, promotional materials, branded workwear, service-related graphics, and digital applications. Each element was designed to work together as a cohesive system, ensuring that Batsi Fix remains consistent, professional, and memorable at every customer interaction.
+              </DetailParagraph>
+              <DetailParagraph style={getBrandParagraphStyle(3)}>
+                This project strengthened my understanding of logo design, brand systems, visual consistency, colour strategy, typography, and brand communication. It also helped me explore how a strong visual identity can communicate trust and make a service-based business feel more professional and accessible.
+              </DetailParagraph>
+              <DetailFooter style={getBrandParagraphStyle(4)}>#FIXINGHOMES, BUILDING TRUST</DetailFooter>
+            </DetailTextWrapper>
+          </DetailStickyWrapper>
+        </DetailScrollContainer>
 
         {/* Slide 11: Brand Identity Mockup */}
         <Section id="brand-work" className="portfolio-section">
@@ -1118,24 +1214,26 @@ export default function App() {
         </Section>
 
         {/* Slide 13: Editorial Design Detail */}
-        <Section id="editorial-detail" className="portfolio-section">
-          <TopoBackground />
-          <DetailTextWrapper>
-            <DetailTitle>BMW M30 MAGAZINE</DetailTitle>
-            <FadeInParagraph>
-              The BMW M30 editorial magazine was designed to celebrate the legacy, performance, and timeless design of the BMW M30 through a premium automotive editorial experience. The objective was to create a sophisticated publication that combines powerful imagery, strong typography, and engaging storytelling to communicate the character and heritage of the iconic vehicle.
-            </FadeInParagraph>
-            <FadeInParagraph>
-              The layouts were developed using a clean editorial grid, creating a balanced interplay among photography, typography, and negative space. High-quality automotive imagery served as the primary visual element, while bold headlines and contrasting typography were used to create a strong visual hierarchy and guide the reader through each story.
-            </FadeInParagraph>
-            <FadeInParagraph>
-              The magazine uses a minimal and modern colour approach, with neutral tones complemented by yellow accents to create emphasis and reinforce the performance-driven character of the BMW M30. Each spread was designed to maintain consistency while allowing the photography and editorial content to create visual impact.
-            </FadeInParagraph>
-            <FadeInParagraph>
-              This project strengthened my understanding of editorial hierarchy, grid systems, typography, image composition, layout design, and visual storytelling. It also allowed me to explore how editorial design can communicate the history, engineering, performance, and personality of an automotive brand through a cohesive print experience.
-            </FadeInParagraph>
-          </DetailTextWrapper>
-        </Section>
+        <DetailScrollContainer id="editorial-detail" ref={editorialOuterRef} className="portfolio-section">
+          <DetailStickyWrapper>
+            <TopoBackground />
+            <DetailTextWrapper>
+              <DetailTitle>BMW M30 MAGAZINE</DetailTitle>
+              <DetailParagraph style={getEditorialParagraphStyle(0)}>
+                The BMW M30 editorial magazine was designed to celebrate the legacy, performance, and timeless design of the BMW M30 through a premium automotive editorial experience. The objective was to create a sophisticated publication that combines powerful imagery, strong typography, and engaging storytelling to communicate the character and heritage of the iconic vehicle.
+              </DetailParagraph>
+              <DetailParagraph style={getEditorialParagraphStyle(1)}>
+                The layouts were developed using a clean editorial grid, creating a balanced interplay among photography, typography, and negative space. High-quality automotive imagery served as the primary visual element, while bold headlines and contrasting typography were used to create a strong visual hierarchy and guide the reader through each story.
+              </DetailParagraph>
+              <DetailParagraph style={getEditorialParagraphStyle(2)}>
+                The magazine uses a minimal and modern colour approach, with neutral tones complemented by yellow accents to create emphasis and reinforce the performance-driven character of the BMW M30. Each spread was designed to maintain consistency while allowing the photography and editorial content to create visual impact.
+              </DetailParagraph>
+              <DetailParagraph style={getEditorialParagraphStyle(3)}>
+                This project strengthened my understanding of editorial hierarchy, grid systems, typography, image composition, layout design, and visual storytelling. It also allowed me to explore how editorial design can communicate the history, engineering, performance, and personality of an automotive brand through a cohesive print experience.
+              </DetailParagraph>
+            </DetailTextWrapper>
+          </DetailStickyWrapper>
+        </DetailScrollContainer>
 
         {/* Slide 14: Editorial Design Mockup */}
         <Section id="editorial-work" className="portfolio-section">
