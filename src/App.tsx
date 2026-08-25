@@ -996,7 +996,7 @@ export default function App() {
           <ContentWrapper>
             <TiltedTitleContainer>
               <CoverTopName>MEHLULI</CoverTopName>
-              <PlayfulHeading $size="8rem">GRAPHIC DESIGNER</PlayfulHeading>
+              <PlayfulHeading $size="6.2rem">GRAPHIC DESIGNER</PlayfulHeading>
               <CoverBottomName>NCUBE</CoverBottomName>
             </TiltedTitleContainer>
             <Tagline>DESIGNING PROJECTS THAT INSPIRE</Tagline>
