@@ -285,6 +285,10 @@ const AboutStickyWrapper = styled.div`
   overflow: visible;
   padding: 100px 60px 140px;
 
+  @media (max-height: 850px) {
+    padding: 70px 60px 160px;
+  }
+
   @media (max-width: 768px) {
     position: relative;
     height: auto;
@@ -351,6 +355,12 @@ const AboutParagraph = styled.p`
     margin-bottom: 0;
     font-weight: 500;
     color: #000000;
+  }
+
+  @media (max-height: 850px) {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin-bottom: 10px;
   }
 
   @media (max-width: 768px) {
@@ -713,6 +723,10 @@ const DetailStickyWrapper = styled.div`
   overflow: visible;
   padding: 100px 60px 140px;
 
+  @media (max-height: 850px) {
+    padding: 70px 60px 160px;
+  }
+
   @media (max-width: 768px) {
     position: relative;
     height: auto;
@@ -727,6 +741,12 @@ const DetailParagraph = styled.p`
   color: #222222;
   margin-bottom: 18px;
   text-align: justify;
+
+  @media (max-height: 850px) {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
 
   @media (max-width: 768px) {
     font-size: 0.88rem;
