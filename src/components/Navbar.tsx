@@ -128,47 +128,64 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
 
   return (
     <NavContainer $scrolled={scrolled} $isDarkSection={isDarkSection}>
-      <Logo onClick={() => scrollToSection('cover')} $isDarkSection={isDarkSection}>
+      <Logo 
+        id="nav-logo"
+        href="#"
+        onClick={(e) => { e.preventDefault(); scrollToSection('cover'); }} 
+        $isDarkSection={isDarkSection}
+      >
         MEHLULI NCUBE
       </Logo>
       <NavLinks>
         <NavLink
-          onClick={() => scrollToSection('about')}
+          id="nav-link-about"
+          href="#"
+          onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}
           $active={activeSection === 'about'}
           $isDarkSection={isDarkSection}
         >
           About
         </NavLink>
         <NavLink
-          onClick={() => scrollToSection('toc')}
+          id="nav-link-contents"
+          href="#"
+          onClick={(e) => { e.preventDefault(); scrollToSection('toc'); }}
           $active={activeSection === 'toc'}
           $isDarkSection={isDarkSection}
         >
           Contents
         </NavLink>
         <NavLink
-          onClick={() => scrollToSection('posters-divider')}
+          id="nav-link-posters"
+          href="#"
+          onClick={(e) => { e.preventDefault(); scrollToSection('posters-divider'); }}
           $active={activeSection.includes('poster')}
           $isDarkSection={isDarkSection}
         >
           Posters
         </NavLink>
         <NavLink
-          onClick={() => scrollToSection('logos-divider')}
+          id="nav-link-logos"
+          href="#"
+          onClick={(e) => { e.preventDefault(); scrollToSection('logos-divider'); }}
           $active={activeSection.includes('logo')}
           $isDarkSection={isDarkSection}
         >
           Logos
         </NavLink>
         <NavLink
-          onClick={() => scrollToSection('brand-divider')}
+          id="nav-link-identity"
+          href="#"
+          onClick={(e) => { e.preventDefault(); scrollToSection('brand-divider'); }}
           $active={activeSection.includes('brand')}
           $isDarkSection={isDarkSection}
         >
           Identity
         </NavLink>
         <NavLink
-          onClick={() => scrollToSection('editorial-divider')}
+          id="nav-link-editorial"
+          href="#"
+          onClick={(e) => { e.preventDefault(); scrollToSection('editorial-divider'); }}
           $active={activeSection.includes('editorial')}
           $isDarkSection={isDarkSection}
         >

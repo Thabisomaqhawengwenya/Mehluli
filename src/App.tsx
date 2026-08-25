@@ -92,7 +92,7 @@ const TiltedTitleContainer = styled.div`
   }
 `;
 
-const TiltedHeading = styled.h1<{ $color?: string; $size?: string }>`
+const TiltedHeading = styled.h2<{ $color?: string; $size?: string }>`
   font-family: 'Bebas Neue', sans-serif;
   font-size: ${({ $size }) => $size || '7.5rem'};
   color: ${({ $color }) => $color || '#000000'};
@@ -136,9 +136,10 @@ interface PlayfulHeadingProps {
   children: string;
   $color?: string;
   $size?: string;
+  as?: React.ElementType;
 }
 
-const PlayfulHeading: React.FC<PlayfulHeadingProps> = ({ children, $color, $size }) => {
+const PlayfulHeading: React.FC<PlayfulHeadingProps> = ({ children, $color, $size, as }) => {
   const [animate, setAnimate] = useState(false);
   const ref = useRef<HTMLHeadingElement>(null);
 
@@ -161,7 +162,7 @@ const PlayfulHeading: React.FC<PlayfulHeadingProps> = ({ children, $color, $size
   }, []);
 
   return (
-    <TiltedHeading ref={ref} $color={$color} $size={$size}>
+    <TiltedHeading ref={ref} as={as || 'h2'} $color={$color} $size={$size}>
       {children.split('').map((char, index) => (
         <PlayfulChar key={index} $delay={index * 0.04} $animate={animate}>
           {char === ' ' ? '\u00A0' : char}
@@ -996,7 +997,7 @@ export default function App() {
           <ContentWrapper>
             <TiltedTitleContainer>
               <CoverTopName>MEHLULI</CoverTopName>
-              <PlayfulHeading $size="6.2rem">GRAPHIC DESIGNER</PlayfulHeading>
+              <PlayfulHeading as="h1" $size="6.2rem">GRAPHIC DESIGNER</PlayfulHeading>
               <CoverBottomName>NCUBE</CoverBottomName>
             </TiltedTitleContainer>
             <Tagline>DESIGNING PROJECTS THAT INSPIRE</Tagline>
@@ -1021,7 +1022,7 @@ export default function App() {
             <TopoBackground />
             <AboutGrid>
               <AboutImageWrapper>
-                <AboutPortrait src={page_2_img_1} alt="Mehluli Polaroid Suspender Portrait" />
+                <AboutPortrait src={page_2_img_1} loading="lazy" alt="Mehluli Polaroid Suspender Portrait" />
               </AboutImageWrapper>
               <AboutTextContainer>
                 <TiltedTitleContainer style={{ alignSelf: 'flex-start', marginBottom: '20px' }}>
@@ -1060,6 +1061,7 @@ export default function App() {
               {/* Badges positioned absolutely on desktop */}
               {/* 01 Cover Page */}
               <CircleBadge 
+                id="badge-cover-desktop"
                 $top="40px" 
                 $left="100px" 
                 onClick={() => scrollToSection('cover')}
@@ -1070,6 +1072,7 @@ export default function App() {
 
               {/* 02 About */}
               <NotchedBadge 
+                id="badge-about-desktop"
                 $top="180px" 
                 $left="60px" 
                 onClick={() => scrollToSection('about')}
@@ -1090,6 +1093,7 @@ export default function App() {
 
               {/* 03 Social Media Poster */}
               <RoundedRectBadge 
+                id="badge-posters-desktop"
                 $top="310px" 
                 $left="180px" 
                 onClick={() => scrollToSection('posters-divider')}
@@ -1100,11 +1104,12 @@ export default function App() {
 
               {/* Mehluli Profile cutout in the center */}
               <TOCProfileWrapper>
-                <TOCProfile src={page_3_img_1} alt="Mehluli Profile Cutout" />
+                <TOCProfile src={page_3_img_1} loading="lazy" alt="Mehluli Profile Cutout" />
               </TOCProfileWrapper>
 
               {/* 04 Logos */}
               <NotchedBadge 
+                id="badge-logos-desktop"
                 $top="70px" 
                 $right="220px" 
                 onClick={() => scrollToSection('logos-divider')}
@@ -1125,6 +1130,7 @@ export default function App() {
 
               {/* 05 Brand Identity */}
               <CircleBadge 
+                id="badge-identity-desktop"
                 $top="320px" 
                 $right="200px" 
                 onClick={() => scrollToSection('brand-divider')}
@@ -1135,6 +1141,7 @@ export default function App() {
 
               {/* 06 Editorial Design */}
               <TiltedRectBadge 
+                id="badge-editorial-desktop"
                 $top="200px" 
                 $right="60px" 
                 onClick={() => scrollToSection('editorial-divider')}
@@ -1145,11 +1152,11 @@ export default function App() {
 
               {/* Badges grid for mobile (when absolute items are hidden/reflowed) */}
               <MobileBadgesGrid>
-                <CircleBadge $top="0" $left="0" onClick={() => scrollToSection('cover')}>
+                <CircleBadge id="badge-cover-mobile" $top="0" $left="0" onClick={() => scrollToSection('cover')}>
                   <BadgeNum>01</BadgeNum>
                   <BadgeText>Cover Page</BadgeText>
                 </CircleBadge>
-                <NotchedBadge $top="0" $left="0" onClick={() => scrollToSection('about')}>
+                <NotchedBadge id="badge-about-mobile" $top="0" $left="0" onClick={() => scrollToSection('about')}>
                   <NotchedSvg viewBox="0 0 120 70">
                     <path d="M 12,0 C 12,8 8,12 0,12 L 0,58 C 8,58 12,62 12,70 L 108,70 C 108,62 112,58 120,58 L 120,12 C 112,12 108,8 108,0 Z" fill="none" stroke="#000000" strokeWidth="1.5" />
                   </NotchedSvg>
@@ -1158,11 +1165,11 @@ export default function App() {
                     <BadgeText>About</BadgeText>
                   </NotchedContent>
                 </NotchedBadge>
-                <RoundedRectBadge $top="0" $left="0" onClick={() => scrollToSection('posters-divider')}>
+                <RoundedRectBadge id="badge-posters-mobile" $top="0" $left="0" onClick={() => scrollToSection('posters-divider')}>
                   <BadgeNum>03</BadgeNum>
                   <BadgeText>Social Media</BadgeText>
                 </RoundedRectBadge>
-                <NotchedBadge $top="0" $left="0" onClick={() => scrollToSection('logos-divider')}>
+                <NotchedBadge id="badge-logos-mobile" $top="0" $left="0" onClick={() => scrollToSection('logos-divider')}>
                   <NotchedSvg viewBox="0 0 120 70">
                     <path d="M 12,0 C 12,8 8,12 0,12 L 0,58 C 8,58 12,62 12,70 L 108,70 C 108,62 112,58 120,58 L 120,12 C 112,12 108,8 108,0 Z" fill="none" stroke="#000000" strokeWidth="1.5" />
                   </NotchedSvg>
@@ -1171,11 +1178,11 @@ export default function App() {
                     <BadgeText>Logos</BadgeText>
                   </NotchedContent>
                 </NotchedBadge>
-                <CircleBadge $top="0" $left="0" onClick={() => scrollToSection('brand-divider')}>
+                <CircleBadge id="badge-identity-mobile" $top="0" $left="0" onClick={() => scrollToSection('brand-divider')}>
                   <BadgeNum>05</BadgeNum>
                   <BadgeText>Brand Identity</BadgeText>
                 </CircleBadge>
-                <TiltedRectBadge $top="0" $left="0" onClick={() => scrollToSection('editorial-divider')}>
+                <TiltedRectBadge id="badge-editorial-mobile" $top="0" $left="0" onClick={() => scrollToSection('editorial-divider')}>
                   <BadgeNum>06</BadgeNum>
                   <BadgeText>Editorial</BadgeText>
                 </TiltedRectBadge>
@@ -1196,10 +1203,10 @@ export default function App() {
         <Section id="posters-1" className="portfolio-section">
           <WorkPageGrid>
             <PosterWrapper>
-              <Poster src={page_5_img_1} alt="Nike Air Jordan Just Do It Poster" />
+              <Poster src={page_5_img_1} loading="lazy" alt="Nike Air Jordan Just Do It Poster" />
             </PosterWrapper>
             <PosterWrapper>
-              <Poster src={page_5_img_2} alt="eKhaya Take a Bite of Happiness Burger Poster" />
+              <Poster src={page_5_img_2} loading="lazy" alt="eKhaya Take a Bite of Happiness Burger Poster" />
             </PosterWrapper>
           </WorkPageGrid>
         </Section>
@@ -1208,10 +1215,10 @@ export default function App() {
         <Section id="posters-2" className="portfolio-section">
           <WorkPageGrid>
             <PosterWrapper>
-              <Poster src={page_6_img_1} alt="Fitlife Weekend Bootcamp Outdoor Fitness Poster" />
+              <Poster src={page_6_img_1} loading="lazy" alt="Fitlife Weekend Bootcamp Outdoor Fitness Poster" />
             </PosterWrapper>
             <PosterWrapper>
-              <Poster src={page_6_img_2} alt="Mylik Wilson Freshman of the Year Basketball Poster" />
+              <Poster src={page_6_img_2} loading="lazy" alt="Mylik Wilson Freshman of the Year Basketball Poster" />
             </PosterWrapper>
           </WorkPageGrid>
         </Section>
@@ -1228,12 +1235,12 @@ export default function App() {
         <Section id="logos-work" className="portfolio-section">
           <LogosGrid>
             <LogoColumn>
-              <LogoHeaderImg src={page_8_img_3} $height={80} alt="Batsi Fix Logo" />
-              <LogoMockupImg src={page_8_img_2} alt="Batsi Fix Round Sign Mockup" />
+              <LogoHeaderImg src={page_8_img_3} $height={80} loading="lazy" alt="Batsi Fix Logo" />
+              <LogoMockupImg src={page_8_img_2} loading="lazy" alt="Batsi Fix Round Sign Mockup" />
             </LogoColumn>
             <LogoColumn>
-              <LogoHeaderImg src={page_8_img_4} $height={100} alt="Mojito Juice Logo" />
-              <LogoMockupImg src={page_8_img_1} alt="Mojito Juice Bottle Mockup" />
+              <LogoHeaderImg src={page_8_img_4} $height={100} loading="lazy" alt="Mojito Juice Logo" />
+              <LogoMockupImg src={page_8_img_1} loading="lazy" alt="Mojito Juice Bottle Mockup" />
             </LogoColumn>
           </LogosGrid>
         </Section>
@@ -1272,7 +1279,7 @@ export default function App() {
         {/* Slide 11: Brand Identity Mockup */}
         <Section id="brand-work" className="portfolio-section">
           <MockupContainer>
-            <FullMockupImg src={page_11_img_1} alt="Batsi Fix Branding Design Presentation" />
+            <FullMockupImg src={page_11_img_1} loading="lazy" alt="Batsi Fix Branding Design Presentation" />
           </MockupContainer>
         </Section>
 
@@ -1309,7 +1316,7 @@ export default function App() {
         {/* Slide 14: Editorial Design Mockup */}
         <Section id="editorial-work" className="portfolio-section">
           <MockupContainer>
-            <FullMockupImg src={page_14_img_1} alt="BMW M30 Editorial Magazine Cover Mockup" />
+            <FullMockupImg src={page_14_img_1} loading="lazy" alt="BMW M30 Editorial Magazine Cover Mockup" />
           </MockupContainer>
         </Section>
 
