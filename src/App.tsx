@@ -106,7 +106,7 @@ const TiltedHeading = styled.h2<{ $color?: string; $size?: string }>`
     font-size: 5.5rem;
   }
   @media (max-width: 768px) {
-    font-size: 3.8rem;
+    font-size: clamp(1.8rem, 7.5vw, 2.8rem);
   }
 `;
 
@@ -368,6 +368,26 @@ const AboutParagraph = styled.p`
   }
 `;
 
+const TOCProfileWrapper = styled.div`
+  position: relative;
+  width: 250px;
+  height: 380px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    width: 180px;
+    height: 270px;
+  }
+`;
+
+const TOCProfile = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+`;
+
 const ContentsCard = styled.div`
   position: relative;
   background: #fdfdfb;
@@ -390,31 +410,20 @@ const ContentsCard = styled.div`
 
   @media (max-width: 768px) {
     height: auto;
-    border-radius: 0 100px 100px 0;
-    padding: 60px 20px;
+    min-height: 0;
+    border-radius: 0 40px 40px 0;
+    padding: 30px 15px;
     flex-direction: column;
-    gap: 40px;
+    gap: 20px;
+
+    /* Hide desktop absolute elements on mobile */
+    & > button {
+      display: none;
+    }
+    & > ${TOCProfileWrapper} {
+      display: none;
+    }
   }
-`;
-
-const TOCProfileWrapper = styled.div`
-  position: relative;
-  width: 250px;
-  height: 380px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  @media (max-width: 768px) {
-    width: 180px;
-    height: 270px;
-  }
-`;
-
-const TOCProfile = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
 `;
 
 // Badges for Table of Contents
