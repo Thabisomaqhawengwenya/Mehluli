@@ -368,13 +368,13 @@ const AboutParagraph = styled.p`
   }
 `;
 
-// Slide 3: Table of Contents Elements
 const ContentsCard = styled.div`
   position: relative;
   background: #fdfdfb;
   width: 100%;
   max-width: 950px;
   height: 60vh;
+  min-height: 450px;
   border-radius: 0 250px 250px 0;
   border: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
