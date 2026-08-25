@@ -890,8 +890,8 @@ export default function App() {
   useEffect(() => {
     const observerOptions = {
       root: null, // viewport
-      rootMargin: '0px',
-      threshold: 0.5, // trigger when 50% of the section is visible
+      rootMargin: '-45% 0px -45% 0px', // Center-focused spy window (detects section at center 10% of viewport)
+      threshold: 0, // trigger immediately upon entering the center strip
     };
 
     const sectionElements = document.querySelectorAll('.portfolio-section');
