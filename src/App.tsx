@@ -220,7 +220,7 @@ const AboutStickyWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
   overflow: visible;
-  padding: 100px 60px 80px;
+  padding: 100px 60px 140px;
 
   @media (max-width: 768px) {
     position: relative;
@@ -259,7 +259,7 @@ const AboutImageWrapper = styled.div`
 
 const AboutPortrait = styled.img`
   max-width: 100%;
-  max-height: 70vh;
+  max-height: 52vh;
   border-radius: 4px;
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
   object-fit: cover;
