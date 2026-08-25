@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { TopoBackground } from './components/TopoBackground';
 import { Navbar } from './components/Navbar';
 
@@ -109,6 +109,67 @@ const TiltedHeading = styled.h1<{ $color?: string; $size?: string }>`
     font-size: 3.8rem;
   }
 `;
+
+const bouncePlayful = keyframes`
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.3) translateY(-15px) rotate(8deg);
+  }
+`;
+
+const PlayfulChar = styled.span<{ $delay: number; $animate: boolean }>`
+  display: inline-block;
+  opacity: ${({ $animate }) => ($animate ? 1 : 0)};
+  transform: ${({ $animate }) => ($animate ? 'scale(1) translateY(0)' : 'scale(0) translateY(50px)')};
+  transform-origin: center bottom;
+  transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition-delay: ${({ $delay }) => $delay}s;
+
+  &:hover {
+    animation: ${bouncePlayful} 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+`;
+
+interface PlayfulHeadingProps {
+  children: string;
+  $color?: string;
+  $size?: string;
+}
+
+const PlayfulHeading: React.FC<PlayfulHeadingProps> = ({ children, $color, $size }) => {
+  const [animate, setAnimate] = useState(false);
+  const ref = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setAnimate(true);
+        } else {
+          setAnimate(false);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <TiltedHeading ref={ref} $color={$color} $size={$size}>
+      {children.split('').map((char, index) => (
+        <PlayfulChar key={index} $delay={index * 0.04} $animate={animate}>
+          {char === ' ' ? '\u00A0' : char}
+        </PlayfulChar>
+      ))}
+    </TiltedHeading>
+  );
+};
 
 // Slide 1: Cover Page Elements
 const CoverTopName = styled.span`
@@ -935,7 +996,7 @@ export default function App() {
           <ContentWrapper>
             <TiltedTitleContainer>
               <CoverTopName>MEHLULI</CoverTopName>
-              <TiltedHeading $size="8rem">GRAPHIC DESIGNER</TiltedHeading>
+              <PlayfulHeading $size="8rem">GRAPHIC DESIGNER</PlayfulHeading>
               <CoverBottomName>NCUBE</CoverBottomName>
             </TiltedTitleContainer>
             <Tagline>DESIGNING PROJECTS THAT INSPIRE</Tagline>
@@ -964,7 +1025,7 @@ export default function App() {
               </AboutImageWrapper>
               <AboutTextContainer>
                 <TiltedTitleContainer style={{ alignSelf: 'flex-start', marginBottom: '20px' }}>
-                  <TiltedHeading $size="4.5rem">ABOUT ME</TiltedHeading>
+                  <PlayfulHeading $size="4.5rem">ABOUT ME</PlayfulHeading>
                 </TiltedTitleContainer>
                 
                 <AboutParagraph style={getParagraphProgressStyle(0)}>
@@ -992,7 +1053,7 @@ export default function App() {
           <TopoBackground dark />
           <ContentWrapper>
             <TiltedTitleContainer style={{ marginBottom: '20px' }}>
-              <TiltedHeading $size="4.5rem" $color="#ffffff">TABLE OF CONTENTS</TiltedHeading>
+              <PlayfulHeading $size="4.5rem" $color="#ffffff">TABLE OF CONTENTS</PlayfulHeading>
             </TiltedTitleContainer>
             
             <ContentsCard>
@@ -1127,7 +1188,7 @@ export default function App() {
         <Section id="posters-divider" className="portfolio-section">
           <TopoBackground />
           <TiltedTitleContainer>
-            <TiltedHeading $size="8rem">SOCIAL MEDIA POSTERS</TiltedHeading>
+            <PlayfulHeading $size="8rem">SOCIAL MEDIA POSTERS</PlayfulHeading>
           </TiltedTitleContainer>
         </Section>
 
@@ -1159,7 +1220,7 @@ export default function App() {
         <Section id="logos-divider" className="portfolio-section">
           <TopoBackground />
           <TiltedTitleContainer>
-            <TiltedHeading $size="8rem">LOGOS</TiltedHeading>
+            <PlayfulHeading $size="8rem">LOGOS</PlayfulHeading>
           </TiltedTitleContainer>
         </Section>
 
@@ -1181,7 +1242,7 @@ export default function App() {
         <Section id="brand-divider" className="portfolio-section">
           <TopoBackground />
           <TiltedTitleContainer>
-            <TiltedHeading $size="8rem">BRAND IDENTITY</TiltedHeading>
+            <PlayfulHeading $size="8rem">BRAND IDENTITY</PlayfulHeading>
           </TiltedTitleContainer>
         </Section>
 
@@ -1219,7 +1280,7 @@ export default function App() {
         <Section id="editorial-divider" className="portfolio-section">
           <TopoBackground />
           <TiltedTitleContainer>
-            <TiltedHeading $size="8rem">EDITORIAL DESIGN</TiltedHeading>
+            <PlayfulHeading $size="8rem">EDITORIAL DESIGN</PlayfulHeading>
           </TiltedTitleContainer>
         </Section>
 
@@ -1256,7 +1317,7 @@ export default function App() {
         <FullHeightSection id="thank-you" className="portfolio-section">
           <TopoBackground showAllCorners />
           <TiltedTitleContainer>
-            <TiltedHeading $size="8.5rem">THANK YOU</TiltedHeading>
+            <PlayfulHeading $size="8.5rem">THANK YOU</PlayfulHeading>
           </TiltedTitleContainer>
         </FullHeightSection>
 
