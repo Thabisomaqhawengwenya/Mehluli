@@ -446,7 +446,7 @@ const BadgeBase = styled.button`
   }
 
   @media (max-width: 768px) {
-    position: static;
+    position: relative;
     transform: none;
     &:hover {
       transform: none;
@@ -506,7 +506,7 @@ const NotchedBadge = styled(BadgeBase)<{ $top: string; $left?: string; $right?: 
   position: absolute;
 
   @media (max-width: 768px) {
-    position: static;
+    position: relative;
     width: 110px;
     height: 64px;
   }
@@ -1196,7 +1196,7 @@ export default function App() {
                 </NotchedBadge>
                 <RoundedRectBadge id="badge-posters-mobile" $top="0" $left="0" onClick={() => scrollToSection('posters-divider')}>
                   <BadgeNum>03</BadgeNum>
-                  <BadgeText>Social Media</BadgeText>
+                  <BadgeText>Social Media<br/>Poster</BadgeText>
                 </RoundedRectBadge>
                 <NotchedBadge id="badge-logos-mobile" $top="0" $left="0" onClick={() => scrollToSection('logos-divider')}>
                   <NotchedSvg viewBox="0 0 120 70">
@@ -1209,11 +1209,11 @@ export default function App() {
                 </NotchedBadge>
                 <CircleBadge id="badge-identity-mobile" $top="0" $left="0" onClick={() => scrollToSection('brand-divider')}>
                   <BadgeNum>05</BadgeNum>
-                  <BadgeText>Brand Identity</BadgeText>
+                  <BadgeText>Brand<br/>Identity</BadgeText>
                 </CircleBadge>
                 <TiltedRectBadge id="badge-editorial-mobile" $top="0" $left="0" onClick={() => scrollToSection('editorial-divider')}>
                   <BadgeNum>06</BadgeNum>
-                  <BadgeText>Editorial</BadgeText>
+                  <BadgeText>Editorial<br/>Design</BadgeText>
                 </TiltedRectBadge>
               </MobileBadgesGrid>
             </ContentsCard>
