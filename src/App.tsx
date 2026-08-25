@@ -563,9 +563,12 @@ const LogoColumn = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 62vh;
+  min-height: 450px;
+  gap: 25px;
 
   @media (max-width: 768px) {
     height: auto;
+    min-height: 0;
     gap: 20px;
   }
 `;
