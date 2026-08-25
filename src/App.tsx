@@ -508,9 +508,9 @@ const WorkPageGrid = styled.div`
   margin: auto 0;
 
   @media (max-width: 768px) {
-    flex-direction: column;
+    flex-direction: row;
     height: auto;
-    gap: 30px;
+    gap: 15px;
     margin: 0;
   }
 `;
@@ -524,9 +524,9 @@ const PosterWrapper = styled.div`
   max-width: 460px;
 
   @media (max-width: 768px) {
-    width: 100%;
-    max-width: 340px;
-    aspect-ratio: 0.8;
+    width: 50%;
+    max-width: 100%;
+    height: auto;
   }
 `;
 
@@ -551,8 +551,8 @@ const LogosGrid = styled.div`
   margin: auto 0;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 40px;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
     margin: 0;
   }
 `;
