@@ -50,8 +50,15 @@ const Section = styled.section<{ $bg?: string }>`
   padding: 100px 60px 80px;
 
   @media (max-width: 768px) {
-    min-height: 100svh;
+    min-height: auto;
     scroll-snap-align: none;
+    padding: 60px 20px 40px;
+  }
+`;
+
+const FullHeightSection = styled(Section)`
+  @media (max-width: 768px) {
+    min-height: 100svh;
     padding: 120px 20px 80px;
   }
 `;
@@ -923,7 +930,7 @@ export default function App() {
       <AppContainer ref={scrollContainerRef}>
         
         {/* Slide 1: Cover Page */}
-        <Section id="cover" className="portfolio-section">
+        <FullHeightSection id="cover" className="portfolio-section">
           <TopoBackground showAllCorners />
           <ContentWrapper>
             <TiltedTitleContainer>
@@ -945,7 +952,7 @@ export default function App() {
               </PortraitCard>
             </PortraitsRow>
           </ContentWrapper>
-        </Section>
+        </FullHeightSection>
 
         {/* Slide 2: About Me */}
         <AboutScrollContainer id="about" ref={aboutOuterRef} className="portfolio-section">
@@ -1246,12 +1253,12 @@ export default function App() {
         </Section>
 
         {/* Slide 15: Thank You */}
-        <Section id="thank-you" className="portfolio-section">
+        <FullHeightSection id="thank-you" className="portfolio-section">
           <TopoBackground showAllCorners />
           <TiltedTitleContainer>
             <TiltedHeading $size="8.5rem">THANK YOU</TiltedHeading>
           </TiltedTitleContainer>
-        </Section>
+        </FullHeightSection>
 
       </AppContainer>
     </>
